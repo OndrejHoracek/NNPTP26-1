@@ -1,18 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
 using System.Drawing;
-using System.Drawing.Design;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.Drawing.Printing;
-using System.Drawing.Text;
-using System.Drawing.Drawing2D;
-using System.Linq.Expressions;
-using System.Threading;
 using NNPTPZ1.Mathematics;
 
 namespace NNPTPZ1
@@ -46,21 +34,21 @@ namespace NNPTPZ1
             double xstep = (xmax - xmin) / intargs[0];
             double ystep = (ymax - ymin) / intargs[1];
 
-            List<Cplx> koreny = new List<Cplx>();
+            List<ComplexNumber> roots = new List<ComplexNumber>();
             // TODO: poly should be parameterised?
             Poly p = new Poly();
-            p.Coe.Add(new Cplx() { Re = 1 });
-            p.Coe.Add(Cplx.Zero);
-            p.Coe.Add(Cplx.Zero);
+            p.Coefficients.Add(new ComplexNumber() { RealPart = 1 });
+            p.Coefficients.Add(ComplexNumber.Zero);
+            p.Coefficients.Add(ComplexNumber.Zero);
             //p.Coe.Add(Cplx.Zero);
-            p.Coe.Add(new Cplx() { Re = 1 });
+            p.Coefficients.Add(new ComplexNumber() { RealPart = 1 });
             Poly ptmp = p;
             Poly pd = p.Derive();
 
             Console.WriteLine(p);
             Console.WriteLine(pd);
 
-            var clrs = new Color[]
+            var colors = new Color[]
             {
                 Color.Red, Color.Blue, Color.Green, Color.Yellow, Color.Orange, Color.Fuchsia, Color.Gold, Color.Cyan, Color.Magenta
             };
@@ -77,16 +65,16 @@ namespace NNPTPZ1
                     double y = ymin + i * ystep;
                     double x = xmin + j * xstep;
 
-                    Cplx ox = new Cplx()
+                    ComplexNumber ox = new ComplexNumber()
                     {
-                        Re = x,
-                        Imaginari = (float)(y)
+                        RealPart = x,
+                        ImaginariPart = (float)(y)
                     };
 
-                    if (ox.Re == 0)
-                        ox.Re = 0.0001;
-                    if (ox.Imaginari == 0)
-                        ox.Imaginari = 0.0001f;
+                    if (ox.RealPart == 0)
+                        ox.RealPart = 0.0001;
+                    if (ox.ImaginariPart == 0)
+                        ox.ImaginariPart = 0.0001f;
 
                     //Console.WriteLine(ox);
 
@@ -98,7 +86,7 @@ namespace NNPTPZ1
                         ox = ox.Subtract(diff);
 
                         //Console.WriteLine($"{q} {ox} -({diff})");
-                        if (Math.Pow(diff.Re, 2) + Math.Pow(diff.Imaginari, 2) >= 0.5)
+                        if (Math.Pow(diff.RealPart, 2) + Math.Pow(diff.ImaginariPart, 2) >= 0.5)
                         {
                             q--;
                         }
@@ -110,9 +98,9 @@ namespace NNPTPZ1
                     // find solution root number
                     var known = false;
                     var id = 0;
-                    for (int w = 0; w <koreny.Count;w++)
+                    for (int w = 0; w <roots.Count;w++)
                     {
-                        if (Math.Pow(ox.Re- koreny[w].Re, 2) + Math.Pow(ox.Imaginari - koreny[w].Imaginari, 2) <= 0.01)
+                        if (Math.Pow(ox.RealPart- roots[w].RealPart, 2) + Math.Pow(ox.ImaginariPart - roots[w].ImaginariPart, 2) <= 0.01)
                         {
                             known = true;
                             id = w;
@@ -120,15 +108,15 @@ namespace NNPTPZ1
                     }
                     if (!known)
                     {
-                        koreny.Add(ox);
-                        id = koreny.Count;
+                        roots.Add(ox);
+                        id = roots.Count;
                         maxid = id + 1; 
                     }
 
                     // colorize pixel according to root number
                     //int vv = id;
                     //int vv = id * 50 + (int)it*5;
-                    var vv = clrs[id % clrs.Length];
+                    var vv = colors[id % colors.Length];
                     vv = Color.FromArgb(vv.R, vv.G, vv.B);
                     vv = Color.FromArgb(Math.Min(Math.Max(0, vv.R-(int)it*2), 255), Math.Min(Math.Max(0, vv.G - (int)it*2), 255), Math.Min(Math.Max(0, vv.B - (int)it*2), 255));
                     //vv = Math.Min(Math.Max(0, vv), 255);
