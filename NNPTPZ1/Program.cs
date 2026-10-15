@@ -36,17 +36,16 @@ namespace NNPTPZ1
 
             List<ComplexNumber> roots = new List<ComplexNumber>();
             // TODO: poly should be parameterised?
-            Poly p = new Poly();
-            p.Coefficients.Add(new ComplexNumber() { RealPart = 1 });
-            p.Coefficients.Add(ComplexNumber.Zero);
-            p.Coefficients.Add(ComplexNumber.Zero);
+            Poly polynom = new Poly();
+            polynom.Coefficients.Add(new ComplexNumber() { RealPart = 1 });
+            polynom.Coefficients.Add(ComplexNumber.Zero);
+            polynom.Coefficients.Add(ComplexNumber.Zero);
             //p.Coe.Add(Cplx.Zero);
-            p.Coefficients.Add(new ComplexNumber() { RealPart = 1 });
-            Poly ptmp = p;
-            Poly pd = p.Derive();
+            polynom.Coefficients.Add(new ComplexNumber() { RealPart = 1 });
+            Poly derivate = polynom.Derive();
 
-            Console.WriteLine(p);
-            Console.WriteLine(pd);
+            Console.WriteLine(polynom);
+            Console.WriteLine(derivate);
 
             var colors = new Color[]
             {
@@ -68,27 +67,27 @@ namespace NNPTPZ1
                     ComplexNumber ox = new ComplexNumber()
                     {
                         RealPart = x,
-                        ImaginariPart = (float)(y)
+                        ImaginaryPart = (float)(y)
                     };
 
                     if (ox.RealPart == 0)
                         ox.RealPart = 0.0001;
-                    if (ox.ImaginariPart == 0)
-                        ox.ImaginariPart = 0.0001f;
+                    if (ox.ImaginaryPart == 0)
+                        ox.ImaginaryPart = 0.0001f;
 
                     //Console.WriteLine(ox);
 
                     // find solution of equation using newton's iteration
                     float it = 0;
-                    for (int q = 0; q< 30; q++)
+                    for (int k = 0; k< 30; k++)
                     {
-                        var diff = p.Eval(ox).Divide(pd.Eval(ox));
+                        var diff = polynom.Eval(ox).Divide(derivate.Eval(ox));
                         ox = ox.Subtract(diff);
 
                         //Console.WriteLine($"{q} {ox} -({diff})");
-                        if (Math.Pow(diff.RealPart, 2) + Math.Pow(diff.ImaginariPart, 2) >= 0.5)
+                        if (Math.Pow(diff.RealPart, 2) + Math.Pow(diff.ImaginaryPart, 2) >= 0.5)
                         {
-                            q--;
+                            k--;
                         }
                         it++;
                     }
@@ -100,7 +99,7 @@ namespace NNPTPZ1
                     var id = 0;
                     for (int w = 0; w <roots.Count;w++)
                     {
-                        if (Math.Pow(ox.RealPart- roots[w].RealPart, 2) + Math.Pow(ox.ImaginariPart - roots[w].ImaginariPart, 2) <= 0.01)
+                        if (Math.Pow(ox.RealPart- roots[w].RealPart, 2) + Math.Pow(ox.ImaginaryPart - roots[w].ImaginaryPart, 2) <= 0.01)
                         {
                             known = true;
                             id = w;
@@ -125,19 +124,10 @@ namespace NNPTPZ1
                 }
             }
 
-            // TODO: delete I suppose...
-            //for (int i = 0; i < 300; i++)
-            //{
-            //    for (int j = 0; j < 300; j++)
-            //    {
-            //        Color c = bmp.GetPixel(j, i);
-            //        int nv = (int)Math.Floor(c.R * (255.0 / maxid));
-            //        bmp.SetPixel(j, i, Color.FromArgb(nv, nv, nv));
-            //    }
-            //}
+          
 
                     bmp.Save(output ?? "../../../out.png");
-            //Console.ReadKey();
+
         }
     }
 }

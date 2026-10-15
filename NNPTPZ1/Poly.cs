@@ -1,103 +1,100 @@
 using System.Collections.Generic;
 
-namespace NNPTPZ1
+namespace NNPTPZ1.Mathematics
 {
-
-    namespace Mathematics
+    public class Poly
     {
-        public class Poly
+        /// <summary>
+        /// Coe
+        /// </summary>
+        public List<ComplexNumber> Coefficients { get; set; }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public Poly() => Coefficients = new List<ComplexNumber>();
+
+        public void Add(ComplexNumber coe) =>
+            Coefficients.Add(coe);
+
+        /// <summary>
+        /// Derives this polynomial and creates new one
+        /// </summary>
+        /// <returns>Derivated polynomial</returns>
+        public Poly Derive()
         {
-            /// <summary>
-            /// Coe
-            /// </summary>
-            public List<ComplexNumber> Coefficients { get; set; }
-
-            /// <summary>
-            /// Constructor
-            /// </summary>
-            public Poly() => Coefficients = new List<ComplexNumber>();
-
-            public void Add(ComplexNumber coe) =>
-                Coefficients.Add(coe);
-
-            /// <summary>
-            /// Derives this polynomial and creates new one
-            /// </summary>
-            /// <returns>Derivated polynomial</returns>
-            public Poly Derive()
+            Poly p = new Poly();
+            for (int q = 1; q < Coefficients.Count; q++)
             {
-                Poly p = new Poly();
-                for (int q = 1; q < Coefficients.Count; q++)
+                p.Coefficients.Add(Coefficients[q].Multiply(new ComplexNumber() { RealPart = q }));
+            }
+
+            return p;
+        }
+
+        /// <summary>
+        /// Evaluates polynomial at given point
+        /// </summary>
+        /// <param name="x">point of evaluation</param>
+        /// <returns>y</returns>
+        public ComplexNumber Eval(double x)
+        {
+            var y = Eval(new ComplexNumber() { RealPart = x, ImaginaryPart = 0 });
+            return y;
+        }
+
+        /// <summary>
+        /// Evaluates polynomial at given point
+        /// </summary>
+        /// <param name="x">point of evaluation</param>
+        /// <returns>y</returns>
+        public ComplexNumber Eval(ComplexNumber x)
+        {
+            ComplexNumber s = ComplexNumber.Zero;
+            for (int i = 0; i < Coefficients.Count; i++)
+            {
+                ComplexNumber coefficient = Coefficients[i];
+                ComplexNumber bx = x;
+                int power = i;
+
+                if (i > 0)
                 {
-                    p.Coefficients.Add(Coefficients[q].Multiply(new ComplexNumber() { RealPart = q }));
+                    for (int j = 0; j < power - 1; j++)
+                        bx = bx.Multiply(x);
+
+                    coefficient = coefficient.Multiply(bx);
                 }
 
-                return p;
+                s = s.Add(coefficient);
             }
 
-            /// <summary>
-            /// Evaluates polynomial at given point
-            /// </summary>
-            /// <param name="x">point of evaluation</param>
-            /// <returns>y</returns>
-            public ComplexNumber Eval(double x)
-            {
-                var y = Eval(new ComplexNumber() { RealPart = x, ImaginariPart = 0 });
-                return y;
-            }
+            return s;
+        }
 
-            /// <summary>
-            /// Evaluates polynomial at given point
-            /// </summary>
-            /// <param name="x">point of evaluation</param>
-            /// <returns>y</returns>
-            public ComplexNumber Eval(ComplexNumber x)
+        /// <summary>
+        /// ToString
+        /// </summary>
+        /// <returns>String repr of polynomial</returns>
+        public override string ToString()
+        {
+            string s = "";
+            int i = 0;
+            for (; i < Coefficients.Count; i++)
             {
-                ComplexNumber s = ComplexNumber.Zero;
-                for (int i = 0; i < Coefficients.Count; i++)
+                s += Coefficients[i];
+                if (i > 0)
                 {
-                    ComplexNumber coefficient = Coefficients[i];
-                    ComplexNumber bx = x;
-                    int power = i;
-
-                    if (i > 0)
+                    int j = 0;
+                    for (; j < i; j++)
                     {
-                        for (int j = 0; j < power - 1; j++)
-                            bx = bx.Multiply(x);
-
-                        coefficient = coefficient.Multiply(bx);
+                        s += "x";
                     }
-
-                    s = s.Add(coefficient);
                 }
-
-                return s;
-            }
-
-            /// <summary>
-            /// ToString
-            /// </summary>
-            /// <returns>String repr of polynomial</returns>
-            public override string ToString()
-            {
-                string s = "";
-                int i = 0;
-                for (; i < Coefficients.Count; i++)
-                {
-                    s += Coefficients[i];
-                    if (i > 0)
-                    {
-                        int j = 0;
-                        for (; j < i; j++)
-                        {
-                            s += "x";
-                        }
-                    }
-                    if (i+1<Coefficients.Count)
+                if (i + 1 < Coefficients.Count)
                     s += " + ";
-                }
-                return s;
             }
+            return s;
         }
     }
+
 }
