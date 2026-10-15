@@ -5,12 +5,14 @@ using NNPTPZ1.Mathematics;
 
 namespace NNPTPZ1
 {
-    /// <summary>
-    /// This program should produce Newton fractals.
-    /// See more at: https://en.wikipedia.org/wiki/Newton_fractal
-    /// </summary>
     class Program
     {
+        private const int MaxIterations = 30;
+        private const double ConvergenceThreshold = 0.5;
+        private const double RootTolerance = 0.01;
+        private const double ZeroReplacement = 0.0001;
+        private const int DarkeningPerIteration = 2;
+
         public static void Main(string[] args)
         {
             int width = int.Parse(args[0]);
@@ -23,25 +25,32 @@ namespace NNPTPZ1
 
             string output = args[6];
 
-            Bitmap bitmap = new Bitmap(width, height);
-
             double xStep = (xMax - xMin) / width;
             double yStep = (yMax - yMin) / height;
 
             List<ComplexNumber> roots = new List<ComplexNumber>();
-
             Polynomial polynomial = CreatePolynom();
-
             Polynomial derivative = polynomial.Derive();
+
 
             Console.WriteLine(polynomial);
             Console.WriteLine(derivative);
 
             var colors = new Color[]
             {
-                Color.Red, Color.Blue, Color.Green, Color.Yellow, Color.Orange, Color.Fuchsia, Color.Gold, Color.Cyan, Color.Magenta
+                Color.Red, Color.Blue, Color.Green, Color.Yellow,
+                Color.Orange, Color.Fuchsia, Color.Gold, Color.Cyan, Color.Magenta
             };
 
+            Bitmap bitmap = CreateBitmap(width, height, xMin, yMin,
+                xStep, yStep, roots, polynomial, derivative, colors);
+
+            bitmap.Save(output ?? "../../../out.png");
+        }
+
+        private static Bitmap CreateBitmap(int width, int height, double xMin, double yMin, double xStep, double yStep, List<ComplexNumber> roots, Polynomial polynomial, Polynomial derivative, Color[] colors)
+        {
+            Bitmap bitmap = new Bitmap(width, height);
 
             for (int yPixel = 0; yPixel < height; yPixel++)
             {
@@ -62,10 +71,7 @@ namespace NNPTPZ1
                 }
             }
 
-
-
-            bitmap.Save(output ?? "../../../out.png");
-
+            return bitmap;
         }
 
         private static int FindOrAddRootIndex(List<ComplexNumber> roots, ComplexNumber current)
@@ -74,7 +80,7 @@ namespace NNPTPZ1
             var knownRoot = false;
             for (int potentialRoot = 0; potentialRoot < roots.Count; potentialRoot++)
             {
-                if (Math.Pow(current.RealPart - roots[potentialRoot].RealPart, 2) + Math.Pow(current.ImaginaryPart - roots[potentialRoot].ImaginaryPart, 2) <= 0.01)
+                if (Math.Pow(current.RealPart - roots[potentialRoot].RealPart, 2) + Math.Pow(current.ImaginaryPart - roots[potentialRoot].ImaginaryPart, 2) <= RootTolerance)
                 {
                     knownRoot = true;
                     indexOfRoot = potentialRoot;
@@ -92,13 +98,13 @@ namespace NNPTPZ1
         private static ComplexNumber ApplyNewtonItteration(Polynomial polynomial, Polynomial derivative, ComplexNumber current, out int iteration)
         {
             iteration = 0;
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < MaxIterations; i++)
             {
                 var difference = polynomial.Evaluate(current).Divide(derivative.Evaluate(current));
                 current = current.Subtract(difference);
 
 
-                if (Math.Pow(difference.RealPart, 2) + Math.Pow(difference.ImaginaryPart, 2) >= 0.5)
+                if (Math.Pow(difference.RealPart, 2) + Math.Pow(difference.ImaginaryPart, 2) >= ConvergenceThreshold)
                 {
                     i--;
                 }
@@ -108,11 +114,14 @@ namespace NNPTPZ1
             return current;
         }
 
-        private static Color GetColor(Color[] colors, int iteration, int id)
+        private static Color GetColor(Color[] colors, int iteration, int rootIndex)
         {
-            var color = colors[id % colors.Length];
+            var color = colors[rootIndex % colors.Length];
             color = Color.FromArgb(color.R, color.G, color.B);
-            color = Color.FromArgb(Math.Min(Math.Max(0, color.R - iteration * 2), 255), Math.Min(Math.Max(0, color.G - (int)iteration * 2), 255), Math.Min(Math.Max(0, color.B - (int)iteration * 2), 255));
+            color = Color.FromArgb(Math.Min(Math.Max(0, color.R - iteration * DarkeningPerIteration), 255),
+                Math.Min(Math.Max(0, color.G - iteration * DarkeningPerIteration), 255),
+                Math.Min(Math.Max(0, color.B - iteration * DarkeningPerIteration), 255));
+
             return color;
         }
 
@@ -125,9 +134,11 @@ namespace NNPTPZ1
             };
 
             if (point.RealPart == 0)
-                point.RealPart = 0.0001;
+                point.RealPart = ZeroReplacement;
+
             if (point.ImaginaryPart == 0)
-                point.ImaginaryPart = 0.0001f;
+                point.ImaginaryPart = ZeroReplacement;
+
             return point;
         }
 

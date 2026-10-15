@@ -60,7 +60,7 @@ namespace NNPTPZ1.Mathematics
                 result += Coefficients[power];
                 if (power > 0)
                 {
-                    for (int j = 0; j < power; j++)
+                    for (int i = 0; i < power; i++)
                     {
                         result += "x";
                     }
