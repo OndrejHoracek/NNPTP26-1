@@ -65,17 +65,17 @@ namespace NNPTPZ1.Mathematics.Tests
         [TestMethod()]
         public void AddTestPolynome()
         {
-            Poly poly = new Mathematics.Poly();
+            Polynomial poly = new Mathematics.Polynomial();
             poly.Coefficients.Add(new ComplexNumber() { RealPart = 1, ImaginaryPart = 0 });
             poly.Coefficients.Add(new ComplexNumber() { RealPart = 0, ImaginaryPart = 0 });
             poly.Coefficients.Add(new ComplexNumber() { RealPart = 1, ImaginaryPart = 0 });
-            ComplexNumber result = poly.Eval(new ComplexNumber() { RealPart = 0, ImaginaryPart = 0 });
+            ComplexNumber result = poly.Evaluate(new ComplexNumber() { RealPart = 0, ImaginaryPart = 0 });
             var expected = new ComplexNumber() { RealPart = 1, ImaginaryPart = 0 };
             Assert.AreEqual(expected, result);
-            result = poly.Eval(new ComplexNumber() { RealPart = 1, ImaginaryPart = 0 });
+            result = poly.Evaluate(new ComplexNumber() { RealPart = 1, ImaginaryPart = 0 });
             expected = new ComplexNumber() { RealPart = 2, ImaginaryPart = 0 };
             Assert.AreEqual(expected, result);
-            result = poly.Eval(new ComplexNumber() { RealPart = 2, ImaginaryPart = 0 });
+            result = poly.Evaluate(new ComplexNumber() { RealPart = 2, ImaginaryPart = 0 });
             expected = new ComplexNumber() { RealPart = 5.0000000000, ImaginaryPart = 0 };
             Assert.AreEqual(expected, result);
 

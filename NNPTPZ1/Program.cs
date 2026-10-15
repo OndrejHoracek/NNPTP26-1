@@ -36,13 +36,13 @@ namespace NNPTPZ1
 
             List<ComplexNumber> roots = new List<ComplexNumber>();
             // TODO: poly should be parameterised?
-            Poly polynom = new Poly();
+            Polynomial polynom = new Polynomial();
             polynom.Coefficients.Add(new ComplexNumber() { RealPart = 1 });
             polynom.Coefficients.Add(ComplexNumber.Zero);
             polynom.Coefficients.Add(ComplexNumber.Zero);
             //p.Coe.Add(Cplx.Zero);
             polynom.Coefficients.Add(new ComplexNumber() { RealPart = 1 });
-            Poly derivate = polynom.Derive();
+            Polynomial derivate = polynom.Derive();
 
             Console.WriteLine(polynom);
             Console.WriteLine(derivate);
@@ -81,7 +81,7 @@ namespace NNPTPZ1
                     float it = 0;
                     for (int k = 0; k< 30; k++)
                     {
-                        var diff = polynom.Eval(ox).Divide(derivate.Eval(ox));
+                        var diff = polynom.Evaluate(ox).Divide(derivate.Evaluate(ox));
                         ox = ox.Subtract(diff);
 
                         //Console.WriteLine($"{q} {ox} -({diff})");
