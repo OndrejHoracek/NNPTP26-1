@@ -7,13 +7,13 @@ namespace NNPTPZ1
 {
     class Program
     {
-        private const int maxIterations = 30;
-        private const double convergenceThreshold = 0.5;
-        private const double rootTolerance = 0.01;
-        private const double zeroReplacement = 0.0001;
-        private const int iterationDarkening = 2;
+        private const int MaxIterations = 30;
+        private const double ConvergenceThreshold = 0.5;
+        private const double RootTolerance = 0.01;
+        private const double ZeroReplacement = 0.0001;
+        private const int IterationDarkening = 2;
 
-        private static readonly Color[] colors =
+        private static readonly Color[] Colors =
         {
                 Color.Red, Color.Blue, Color.Green, Color.Yellow,
                 Color.Orange, Color.Fuchsia, Color.Gold, Color.Cyan, Color.Magenta
@@ -45,7 +45,7 @@ namespace NNPTPZ1
 
 
             Bitmap bitmap = CreateBitmap(width, height, xMin, yMin,
-                xStep, yStep, roots, polynomial, derivative, colors);
+                xStep, yStep, roots, polynomial, derivative, Colors);
 
             bitmap.Save(output ?? "../../../out.png");
         }
@@ -97,10 +97,10 @@ namespace NNPTPZ1
             };
 
             if (point.RealPart == 0)
-                point.RealPart = zeroReplacement;
+                point.RealPart = ZeroReplacement;
 
             if (point.ImaginaryPart == 0)
-                point.ImaginaryPart = zeroReplacement;
+                point.ImaginaryPart = ZeroReplacement;
 
             return point;
         }
@@ -109,12 +109,12 @@ namespace NNPTPZ1
         private static ComplexNumber ApplyNewtonItteration(Polynomial polynomial, Polynomial derivative, ComplexNumber current, out int iteration)
         {
             iteration = 0;
-            for (int i = 0; i < maxIterations; i++)
+            for (int i = 0; i < MaxIterations; i++)
             {
                 var difference = polynomial.Evaluate(current).Divide(derivative.Evaluate(current));
                 current = current.Subtract(difference);
 
-                if (Math.Pow(difference.RealPart, 2) + Math.Pow(difference.ImaginaryPart, 2) >= convergenceThreshold)
+                if (Math.Pow(difference.RealPart, 2) + Math.Pow(difference.ImaginaryPart, 2) >= ConvergenceThreshold)
                 {
                     i--;
                 }
@@ -131,7 +131,7 @@ namespace NNPTPZ1
             var knownRoot = false;
             for (int potentialRoot = 0; potentialRoot < roots.Count; potentialRoot++)
             {
-                if (Math.Pow(current.RealPart - roots[potentialRoot].RealPart, 2) + Math.Pow(current.ImaginaryPart - roots[potentialRoot].ImaginaryPart, 2) <= rootTolerance)
+                if (Math.Pow(current.RealPart - roots[potentialRoot].RealPart, 2) + Math.Pow(current.ImaginaryPart - roots[potentialRoot].ImaginaryPart, 2) <= RootTolerance)
                 {
                     knownRoot = true;
                     indexOfRoot = potentialRoot;
@@ -152,9 +152,9 @@ namespace NNPTPZ1
         {
             var color = colors[rootIndex % colors.Length];
             color = Color.FromArgb(color.R, color.G, color.B);
-            color = Color.FromArgb(Math.Min(Math.Max(0, color.R - iteration * iterationDarkening), 255),
-                Math.Min(Math.Max(0, color.G - iteration * iterationDarkening), 255),
-                Math.Min(Math.Max(0, color.B - iteration * iterationDarkening), 255));
+            color = Color.FromArgb(Math.Min(Math.Max(0, color.R - iteration * IterationDarkening), 255),
+                Math.Min(Math.Max(0, color.G - iteration * IterationDarkening), 255),
+                Math.Min(Math.Max(0, color.B - iteration * IterationDarkening), 255));
 
             return color;
         }
