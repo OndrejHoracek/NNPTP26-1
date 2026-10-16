@@ -55,8 +55,7 @@ namespace NNPTPZ1.Mathematics
             };
         }
 
-        
-        
+
         public double GetAbs()
         {
             return Math.Sqrt(RealPart * RealPart + ImaginaryPart * ImaginaryPart);

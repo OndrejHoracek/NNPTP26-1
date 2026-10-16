@@ -6,7 +6,7 @@ namespace NNPTPZ1.Mathematics
     {
         public List<ComplexNumber> Coefficients { get; set; }
 
- 
+
         public Polynomial() => Coefficients = new List<ComplexNumber>();
 
         public void Add(ComplexNumber coefficient) => Coefficients.Add(coefficient);
