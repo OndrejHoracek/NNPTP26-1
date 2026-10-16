@@ -6,7 +6,7 @@ using NNPTPZ1.Mathematics;
 namespace NNPTPZ1
 {
     class Program
-    {
+    { 
         private const int MaxIterations = 30;
         private const double ConvergenceThreshold = 0.5;
         private const double RootTolerance = 0.01;
